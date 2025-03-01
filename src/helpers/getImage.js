@@ -1,5 +1,5 @@
-export const getImage = async () => {
-    const baseUrl = "https://foodish-api.com/api/ "
+export const getImage = async (category) => {
+    const baseUrl = "https://foodish-api.com/api/images/"+category;
 
     const response = await fetch(baseUrl)
     console.log(response)
