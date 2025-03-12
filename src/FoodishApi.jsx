@@ -1,43 +1,54 @@
-import React, { useState, useEffect } from 'react'
-import { getImage } from './helpers/getImage'
-
+import React, { useState, useEffect } from 'react';
+import { useFetch } from "./hooks/useFetch";
 
 const FoodishApi = () => {
+    const [image, setImage] = useState("initialState");
+    const [category, setCategory] = useState("burger");
 
-    const [image, setImage] = useState("initialState")
-    const [category, setCategory] = useState("burger")   
+    const baseUrl = `https://foodish-api.com/api/images/${category}`;
+    const { data, isLoading, hasError } = useFetch(baseUrl);
 
     useEffect(() => {
-        getImage(category).then((image) => {
-            setImage(image);
-        })
-    }, [])
+        if (data && data.image) {
+            setImage(data.image);
+        }
+    }, [data]);
 
-    const onButtomClick = (evet) => {
-        getImage(category).then((image) => {
-            setImage(image);
-        })
-    }
-
-    const constInputChange = (event) => {
-        const value = event.target.value;
-        setCategory(value);
+    const constInputChange = () => {
+        setImage(null); 
     };
+
+    const onButtomClick = () => {
+        const inputValue = document.getElementById('categoryInput').value;
+        setCategory(inputValue); 
+    };
+
+    if (isLoading && image === "initialState") {
+        return <>
+            <h1>Loading...</h1>
+        </>;
+    }
 
     return (
         <>
             <div className="foodish-container">
                 <h1> Foodish API</h1>
-                <input type="text" onChange={constInputChange}  value={category}/>
+                <input
+                    id="categoryInput"
+                    type="text"
+                    onChange={constInputChange}
+                    defaultValue={category}
+                />
                 <button onClick={onButtomClick}>
                     Refresh Image
                 </button>
-
-                <img src={image} alt="" className='img' />
-
+                {isLoading && <p>Loading...</p>}
+                {hasError && <p>Categoria no encontrada.</p>}
+                {image && image !== "initialState" && <img src={image} alt="Food" className='img' />}
+                {/* <img src={image} alt="" className='img' /> */}
             </div>
         </>
-    )
-}
+    );
+};
 
-export default FoodishApi
+export default FoodishApi;
