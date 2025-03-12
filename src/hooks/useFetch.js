@@ -47,7 +47,7 @@ export const useFetch = (url = '') => {
     useEffect(() => {
         getFetch();
         return () => {
-            // Limpieza si es necesario
+
         };
     }, [url]);
 
